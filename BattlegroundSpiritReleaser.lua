@@ -219,10 +219,18 @@ SlashCmdList["BattlegroundSpiritReleaser"] = function(msg)
 end
 
 local function HasAndCanUseSoulstone()
-	local selfResOptions = GetSortedSelfResurrectOptions()
+	local selfResOption1, selfResOption2
+	if GameDialogDefsUtil and GameDialogDefsUtil.GetSelfResurrectDialogOptions then
+		selfResOption1, selfResOption2 = GameDialogDefsUtil.GetSelfResurrectDialogOptions()
+	elseif GetSortedSelfResurrectOptions then
+		local selfResOptions = GetSortedSelfResurrectOptions()
+		if selfResOptions then
+			selfResOption1, selfResOption2 = selfResOptions[1], selfResOptions[2]
+		end
+	end
 	return (HasSoulstone and HasSoulstone() and CanUseSoulstone and CanUseSoulstone()) or
-	(selfResOptions[1] and selfResOptions[1].name and selfResOptions[1].canUse) or
-	(selfResOptions[2] and selfResOptions[2].name and selfResOptions[2].canUse)
+	(selfResOption1 and selfResOption1.name and selfResOption1.canUse) or
+	(selfResOption2 and selfResOption2.name and selfResOption2.canUse)
 end
 
 --get current time when the death dialog appears to measure for delay
